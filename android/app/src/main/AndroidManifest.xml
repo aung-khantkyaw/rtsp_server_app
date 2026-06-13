@@ -8,9 +8,9 @@
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
     <application
-        android:label="rtsp_server_app"
+        android:label="EasyRTSP"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

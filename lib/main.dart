@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'RTSP Server Flutter',
+      title: 'EasyRTSP',
       theme: ThemeData.dark(),
       home: const RtspServerScreen(),
     );
