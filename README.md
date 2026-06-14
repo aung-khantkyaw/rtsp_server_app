@@ -1,10 +1,13 @@
 # RTSP Server App (Real-time Streaming Protocol)
 
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+
 A powerful Flutter application that transforms your Android device into a live RTSP streaming server. By leveraging native Android Camera2 APIs and the robust RootEncoder library, this app broadcasts real-time video and audio feeds across your local network.
 
 ## Features
 
 - **Real-time Streaming:** Broadcast high-quality video and audio directly from your device's camera and microphone.
+- **Dual Camera Support (New v1.0.0):** Prompts a selection dialog upon starting the server, allowing you to choose between the **Front** or **Back** camera seamlessly.
 - **Native Performance:** Built using Flutter's `MethodChannel` to communicate seamlessly with native Kotlin code for optimized media processing.
 - **Camera2 API Integration:** Utilizes Android's modern Camera2 API for better control over hardware components.
 - **Auto IP Detection:** Automatically detects and displays the device's IPv4 address for easy client connection.
@@ -53,15 +56,16 @@ _(To build a release APK for 64-bit devices, use: `flutter build apk --release -
 1. Open the application on your Android device.
 2. Grant the required **Camera** and **Microphone** permissions when prompted.
 3. Tap the **Start Server** button.
-4. The app will generate an RTSP URL (e.g., `rtsp://192.168.1.5:8554/live.sdp`).
-5. Open a media player that supports RTSP (like [VLC Media Player](https://www.videolan.org/)) on another device connected to the same network.
-6. Go to `Media` > `Open Network Stream` and enter the provided RTSP URL to view the live feed.
+4. A dialog will prompt you to select either the **Front Camera** or **Back Camera**. Choose your preference.
+5. The app will generate an RTSP URL (e.g., `rtsp://192.168.1.5:8554/live.sdp`).
+6. Open a media player that supports RTSP (like [VLC Media Player](https://www.videolan.org/)) on another device connected to the same network.
+7. Go to `Media` > `Open Network Stream` and enter the provided RTSP URL to view the live feed.
 
 ## Architecture Note
 
 This project utilizes Flutter as the UI layer while delegating heavy multimedia encoding and server hosting to the Native Android side via `MethodChannel`.
 
-- **Flutter Side:** Manages UI, state, and triggers native functions.
-- **Native Side (`MainActivity.kt`):** Implements `ConnectChecker`, configures audio/video bitrates, handles camera lifecycle, and manages the RTSP server port (`8554`).
+- **Flutter Side:** Manages UI, state, and triggers native functions with payload arguments (e.g., `isFront` camera state).
+- **Native Side (`MainActivity.kt`):** Implements `ConnectChecker`, configures audio/video bitrates, handles camera lifecycle, dynamic camera switching (`switchCamera()`), and manages the RTSP server port (`8554`).
 
 ---

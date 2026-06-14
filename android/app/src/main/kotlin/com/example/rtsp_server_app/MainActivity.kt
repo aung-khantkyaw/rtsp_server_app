@@ -24,8 +24,9 @@ class MainActivity: FlutterActivity(), ConnectChecker {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "startServer" -> {
+                    val isFront = call.argument<Boolean>("isFront") ?: false
                     if (checkPermissions()) {
-                        val ip = startRtspServer()
+                        val ip = startRtspServer(isFront)
                         if (ip != null) {
                             result.success("rtsp://$ip:$port/live.sdp")
                         } else {
@@ -45,7 +46,7 @@ class MainActivity: FlutterActivity(), ConnectChecker {
         }
     }
 
-    private fun startRtspServer(): String? {
+    private fun startRtspServer(isFront: Boolean): String? {
         if (rtspServerCamera2 == null) {
             rtspServerCamera2 = RtspServerCamera2(this, this, port)
         }
@@ -53,6 +54,13 @@ class MainActivity: FlutterActivity(), ConnectChecker {
         if (rtspServerCamera2?.isStreaming == false) {
             if (rtspServerCamera2?.prepareAudio() == true && rtspServerCamera2?.prepareVideo(1280, 720, 30, 2000 * 1024, 0) == true) {
                 rtspServerCamera2?.startStream()
+                try {
+                    if(rtspServerCamera2?.isFrontCamera != isFront) {
+                        rtspServerCamera2?.switchCamera()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
                 return getIpAddress()
             }
         }

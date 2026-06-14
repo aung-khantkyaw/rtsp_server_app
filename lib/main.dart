@@ -31,9 +31,9 @@ class _RtspServerScreenState extends State<RtspServerScreen> {
   bool isStreaming = false;
   String rtspUrl = "URL will appear here";
 
-  Future<void> _startServer() async {
+  Future<void> startServer(bool isFront) async {
     try {
-      final String url = await platform.invokeMethod('startServer');
+      final String url = await platform.invokeMethod('startServer', {'isFront': isFront});
       setState(() {
         rtspUrl = url;
         isStreaming = true;
@@ -57,11 +57,40 @@ class _RtspServerScreenState extends State<RtspServerScreen> {
     }
   }
 
+  Future<void> showCameraSelectionDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Camera'),
+          content: const Text('Which camera would you like to use for streaming?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Back Camera'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                startServer(false);
+              },
+            ),
+            TextButton(
+              child: const Text('Front Camera'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                startServer(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Flutter RTSP Server"),
+        title: const Text("Easy RTSP"),
         centerTitle: true,
       ),
       body: Center(
@@ -86,7 +115,7 @@ class _RtspServerScreenState extends State<RtspServerScreen> {
               ),
               const SizedBox(height: 40),
               ElevatedButton.icon(
-                onPressed: isStreaming ? _stopServer : _startServer,
+                onPressed: isStreaming ? _stopServer : showCameraSelectionDialog,
                 icon: Icon(isStreaming ? Icons.stop : Icons.play_arrow),
                 label: Text(isStreaming ? "Stop Server" : "Start Server"),
                 style: ElevatedButton.styleFrom(
