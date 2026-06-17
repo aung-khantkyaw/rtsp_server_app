@@ -1,0 +1,8 @@
+person
+car
+motorcycle
+bus
+truck
+bicycle
+dog
+cat
